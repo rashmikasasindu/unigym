@@ -5,17 +5,17 @@ class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  // 1. Sign Up & Save Data
+  // Sign Up & Save Data
   Future<void> signUp({
     required String email, 
     required String password,
-    required String contact,
+    required String name,
     required String regNum,
     required String gender,
-    required String role,
+    // Role is removed from arguments
   }) async {
     try {
-      // A. Create User in Auth
+      // 1. Create User in Auth
       UserCredential result = await _auth.createUserWithEmailAndPassword(
         email: email, 
         password: password
@@ -24,18 +24,21 @@ class AuthService {
       User? user = result.user;
 
       if (user != null) {
-        // B. Send Verification Email immediately
+        // 2. Update Display Name (For Home Page "Welcome, Name!")
+        await user.updateDisplayName(name);
+
+        // 3. Send Verification Email
         await user.sendEmailVerification();
 
-        // C. Save Extra Details to Firestore Database
+        // 4. Save Details to Firestore
         await _firestore.collection('users').doc(user.uid).set({
+          'uid': user.uid,
           'email': email,
-          'contact_number': contact,
+          'name': name,
           'registration_number': regNum,
           'gender': gender,
-          'role': role,
+          'role': 'User', // <--- Default role set automatically
           'created_at': DateTime.now(),
-          'uid': user.uid,
         });
       }
     } on FirebaseAuthException catch (e) {
@@ -43,7 +46,7 @@ class AuthService {
     }
   }
 
-  // 2. Sign In (With Verification Check)
+  // Sign In
   Future<User?> signIn(String email, String password) async {
     try {
       UserCredential result = await _auth.signInWithEmailAndPassword(
@@ -53,9 +56,7 @@ class AuthService {
       
       User? user = result.user;
 
-      // Check if email is verified
       if (user != null && !user.emailVerified) {
-         // If not verified, sign them out immediately and throw error
          await signOut();
          throw Exception("Email not verified. Please check your inbox.");
       }

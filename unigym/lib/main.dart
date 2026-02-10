@@ -3,7 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'firebase_options.dart';
 import 'pages/auth/login_page.dart';
-import 'pages/home/home_page.dart';
+import 'main_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -38,7 +38,7 @@ class MyApp extends StatelessWidget {
 
           // 2. If data (user) exists, show Home Page
           if (snapshot.hasData) {
-            return const HomePage();
+            return const MainScreen();
           }
 
           // 3. Otherwise, show Login Page

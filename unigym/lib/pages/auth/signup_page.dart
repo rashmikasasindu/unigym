@@ -10,31 +10,38 @@ class SignUpPage extends StatefulWidget {
 
 class _SignUpPageState extends State<SignUpPage> {
   // Text Controllers
+  final _nameController = TextEditingController();
+  final _regNumController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  final _contactController = TextEditingController();
-  final _regNumController = TextEditingController();
+  final _confirmPasswordController = TextEditingController(); // <--- NEW
 
   // Service
   final _authService = AuthService();
   bool _isLoading = false;
 
-  // Variables for Radio Buttons
+  // Variables
   String? _selectedGender; 
-  String? _selectedRole;   
 
-  // Register Function
   void _register() async {
-    // Check if fields are empty
-    if (_emailController.text.isEmpty || 
-        _passwordController.text.isEmpty ||
-        _contactController.text.isEmpty ||
+    // 1. Check Empty Fields
+    if (_nameController.text.isEmpty || 
         _regNumController.text.isEmpty ||
-        _selectedGender == null ||
-        _selectedRole == null) {
+        _emailController.text.isEmpty ||
+        _passwordController.text.isEmpty ||
+        _confirmPasswordController.text.isEmpty ||
+        _selectedGender == null) {
       
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Please fill all fields and select options")),
+        const SnackBar(content: Text("Please fill all fields")),
+      );
+      return;
+    }
+
+    // 2. Check Password Match
+    if (_passwordController.text != _confirmPasswordController.text) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Passwords do not match!")),
       );
       return;
     }
@@ -42,17 +49,16 @@ class _SignUpPageState extends State<SignUpPage> {
     setState(() => _isLoading = true);
 
     try {
+      // 3. Register
       await _authService.signUp(
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
-        contact: _contactController.text.trim(),
+        name: _nameController.text.trim(),
         regNum: _regNumController.text.trim(),
         gender: _selectedGender!,
-        role: _selectedRole!,
       );
 
       if (mounted) {
-        // Success Dialog
         showDialog(
           context: context,
           barrierDismissible: false,
@@ -62,7 +68,7 @@ class _SignUpPageState extends State<SignUpPage> {
             actions: [
               TextButton(
                 onPressed: () {
-                  Navigator.pop(ctx); // Close dialog
+                  Navigator.pop(ctx); 
                   Navigator.pop(context); // Go back to Login
                 },
                 child: const Text("OK"),
@@ -85,7 +91,6 @@ class _SignUpPageState extends State<SignUpPage> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      // Gradient Background
       decoration: const BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topCenter,
@@ -94,7 +99,7 @@ class _SignUpPageState extends State<SignUpPage> {
         ),
       ),
       child: Scaffold(
-        backgroundColor: Colors.transparent, // Transparent to show gradient
+        backgroundColor: Colors.transparent, 
         appBar: AppBar(
           title: const Text("Create Profile", style: TextStyle(color: Colors.white)),
           backgroundColor: Colors.transparent,
@@ -104,7 +109,6 @@ class _SignUpPageState extends State<SignUpPage> {
             onPressed: () => Navigator.pop(context),
           ),
         ),
-        // SAFE AREA ensures content isn't hidden behind phone notches
         body: SafeArea(
           child: SingleChildScrollView(
             padding: const EdgeInsets.all(24.0),
@@ -112,72 +116,31 @@ class _SignUpPageState extends State<SignUpPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 
-                // --- 1. EMAIL ---
-                const Text("Email Address", style: TextStyle(color: Colors.white70)),
+                // --- 1. NAME ---
+                const Text("Full Name", style: TextStyle(color: Colors.white70)),
                 const SizedBox(height: 5),
                 TextField(
-                  controller: _emailController,
+                  controller: _nameController,
                   style: const TextStyle(color: Colors.white),
-                  decoration: InputDecoration(
-                    filled: true,
-                    fillColor: Colors.white.withOpacity(0.2),
-                    prefixIcon: const Icon(Icons.email, color: Colors.white70),
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
-                  ),
+                  textCapitalization: TextCapitalization.words,
+                  decoration: _inputDecoration(Icons.person),
                 ),
                 const SizedBox(height: 15),
 
-                // --- 2. PASSWORD ---
-                const Text("Password", style: TextStyle(color: Colors.white70)),
-                const SizedBox(height: 5),
-                TextField(
-                  controller: _passwordController,
-                  obscureText: true,
-                  style: const TextStyle(color: Colors.white),
-                  decoration: InputDecoration(
-                    filled: true,
-                    fillColor: Colors.white.withOpacity(0.2),
-                    prefixIcon: const Icon(Icons.lock, color: Colors.white70),
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
-                  ),
-                ),
-                const SizedBox(height: 15),
-
-                // --- 3. CONTACT NUMBER ---
-                const Text("Contact Number", style: TextStyle(color: Colors.white70)),
-                const SizedBox(height: 5),
-                TextField(
-                  controller: _contactController,
-                  style: const TextStyle(color: Colors.white),
-                  keyboardType: TextInputType.phone,
-                  decoration: InputDecoration(
-                    filled: true,
-                    fillColor: Colors.white.withOpacity(0.2),
-                    prefixIcon: const Icon(Icons.phone, color: Colors.white70),
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
-                  ),
-                ),
-                const SizedBox(height: 15),
-
-                // --- 4. REGISTRATION NUMBER ---
+                // --- 2. REGISTRATION NUMBER ---
                 const Text("Registration Number", style: TextStyle(color: Colors.white70)),
                 const SizedBox(height: 5),
                 TextField(
                   controller: _regNumController,
                   style: const TextStyle(color: Colors.white),
-                  decoration: InputDecoration(
-                    filled: true,
-                    fillColor: Colors.white.withOpacity(0.2),
-                    prefixIcon: const Icon(Icons.badge, color: Colors.white70),
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
-                  ),
+                  decoration: _inputDecoration(Icons.badge),
                 ),
-                const SizedBox(height: 25),
+                const SizedBox(height: 15),
 
-                // --- 5. GENDER (Radio Buttons) ---
+                // --- 3. GENDER ---
                 const Text("Gender", style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
                 Theme(
-                  data: ThemeData.dark(), // Forces white radio circles
+                  data: ThemeData.dark(),
                   child: Row(
                     children: [
                       Expanded(
@@ -203,39 +166,39 @@ class _SignUpPageState extends State<SignUpPage> {
                 ),
                 const SizedBox(height: 15),
 
-                // --- 6. ROLE (Radio Buttons) ---
-                const Text("Select Role", style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
-                Theme(
-                  data: ThemeData.dark(),
-                  child: Column(
-                    children: [
-                      RadioListTile<String>(
-                        title: const Text("Admin", style: TextStyle(color: Colors.white)),
-                        value: "Admin",
-                        groupValue: _selectedRole,
-                        onChanged: (val) => setState(() => _selectedRole = val),
-                        activeColor: Colors.white,
-                      ),
-                      RadioListTile<String>(
-                        title: const Text("Instructor", style: TextStyle(color: Colors.white)),
-                        value: "Instructor",
-                        groupValue: _selectedRole,
-                        onChanged: (val) => setState(() => _selectedRole = val),
-                        activeColor: Colors.white,
-                      ),
-                      RadioListTile<String>(
-                        title: const Text("User", style: TextStyle(color: Colors.white)),
-                        value: "User",
-                        groupValue: _selectedRole,
-                        onChanged: (val) => setState(() => _selectedRole = val),
-                        activeColor: Colors.white,
-                      ),
-                    ],
-                  ),
+                // --- 4. EMAIL (Needed for Auth) ---
+                const Text("Email Address", style: TextStyle(color: Colors.white70)),
+                const SizedBox(height: 5),
+                TextField(
+                  controller: _emailController,
+                  style: const TextStyle(color: Colors.white),
+                  decoration: _inputDecoration(Icons.email),
+                ),
+                const SizedBox(height: 15),
+
+                // --- 5. PASSWORD ---
+                const Text("Password", style: TextStyle(color: Colors.white70)),
+                const SizedBox(height: 5),
+                TextField(
+                  controller: _passwordController,
+                  obscureText: true,
+                  style: const TextStyle(color: Colors.white),
+                  decoration: _inputDecoration(Icons.lock),
+                ),
+                const SizedBox(height: 15),
+
+                // --- 6. CONFIRM PASSWORD ---
+                const Text("Confirm Password", style: TextStyle(color: Colors.white70)),
+                const SizedBox(height: 5),
+                TextField(
+                  controller: _confirmPasswordController,
+                  obscureText: true,
+                  style: const TextStyle(color: Colors.white),
+                  decoration: _inputDecoration(Icons.lock_clock), // Different icon
                 ),
                 const SizedBox(height: 30),
 
-                // --- 7. REGISTER BUTTON ---
+                // --- REGISTER BUTTON ---
                 SizedBox(
                   width: double.infinity,
                   height: 50,
@@ -251,13 +214,22 @@ class _SignUpPageState extends State<SignUpPage> {
                       : const Text("REGISTER ACCOUNT", style: TextStyle(fontWeight: FontWeight.bold)),
                   ),
                 ),
-                // Extra space at bottom for scrolling
                 const SizedBox(height: 50),
               ],
             ),
           ),
         ),
       ),
+    );
+  }
+
+  // Simple Helper for styles
+  InputDecoration _inputDecoration(IconData icon) {
+    return InputDecoration(
+      filled: true,
+      fillColor: Colors.white.withOpacity(0.2),
+      prefixIcon: Icon(icon, color: Colors.white70),
+      border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
     );
   }
 }
