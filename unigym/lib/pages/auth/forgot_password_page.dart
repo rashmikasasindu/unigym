@@ -67,7 +67,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                   // Using the same style approach as signup page
                   decoration: InputDecoration(
                       filled: true,
-                      fillColor: Colors.white.withOpacity(0.2),
+                      fillColor: Colors.white.withValues(alpha: 0.2),
                       prefixIcon: const Icon(Icons.email, color: Colors.white70),
                       labelText: "Enter Email",
                       labelStyle: const TextStyle(color: Colors.white70),

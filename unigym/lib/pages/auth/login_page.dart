@@ -141,7 +141,7 @@ class _LoginPageState extends State<LoginPage> {
   InputDecoration _inputDecoration(String label, IconData icon) {
     return InputDecoration(
       filled: true,
-      fillColor: Colors.white.withOpacity(0.2),
+      fillColor: Colors.white.withValues(alpha: 0.2),
       prefixIcon: Icon(icon, color: Colors.white70),
       labelText: label,
       labelStyle: const TextStyle(color: Colors.white70),

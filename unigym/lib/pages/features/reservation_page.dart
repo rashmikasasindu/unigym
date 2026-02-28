@@ -22,8 +22,8 @@ class ReservationPage extends StatelessWidget {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              primary.withOpacity(0.9),
-              primary.withOpacity(0.4),
+              primary.withValues(alpha: 0.9),
+              primary.withValues(alpha: 0.4),
               Theme.of(context).scaffoldBackgroundColor,
             ],
           ),
@@ -49,7 +49,7 @@ class ReservationPage extends StatelessWidget {
                           children: [
                             CircleAvatar(
                               radius: 22,
-                              backgroundColor: primary.withOpacity(0.15),
+                              backgroundColor: primary.withValues(alpha: 0.15),
                               child: Icon(
                                 Icons.fitness_center,
                                 color: primary,
@@ -328,7 +328,7 @@ class _ReservationFormState extends State<ReservationForm> {
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: primary.withOpacity(0.06),
+                color: primary.withValues(alpha: 0.06),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Row(
@@ -374,3 +374,4 @@ class _ReservationFormState extends State<ReservationForm> {
     );
   }
 }
+

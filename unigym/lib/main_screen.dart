@@ -11,52 +11,27 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  // 1. Track which tab is active (0=Gym, 1=Home, 2=Account)
+  // Track which tab is active (0=Gym, 1=Home, 2=Account)
   int _selectedIndex = 1;
 
-  // 2. Track the specific content widget to show in the body
-  // We initialize it with HomePage because that's our default
-  late Widget _currentBody;
+  // The pages for each tab
+  static const List<Widget> _pages = [
+    GymEquipmentPage(),
+    HomePage(),
+    UserAccountPage(),
+  ];
 
-  @override
-  void initState() {
-    super.initState();
-    // Pass a callback function to HomePage so it can tell us to change the view
-    _currentBody = HomePage(onMenuSelected: _switchContent);
-  }
-
-  // This function swaps the body content but keeps the nav bar!
-  void _switchContent(Widget newPage) {
-    setState(() {
-      _currentBody = newPage;
-    });
-  }
-
-  // Handle Bottom Nav Bar Taps
   void _onNavBarTapped(int index) {
     setState(() {
       _selectedIndex = index;
-      
-      // Define what happens for each tab
-      if (index == 0) {
-        _currentBody = const GymEquipmentPage();
-      } else if (index == 1) {
-        // RESET: If they click Home, we go back to the main grid
-        _currentBody = HomePage(onMenuSelected: _switchContent);
-      } else if (index == 2) {
-        _currentBody = const UserAccountPage();
-      }
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBody: true, // Allows the gradient to show behind the floating bar
-      // The body just shows whatever widget is currently selected
-      body: _currentBody,
-      
-      // The Persistent Bottom Nav Bar
+      extendBody: true,
+      body: _pages[_selectedIndex],
       bottomNavigationBar: Container(
         height: 80,
         decoration: BoxDecoration(
@@ -66,7 +41,11 @@ class _MainScreenState extends State<MainScreen> {
             topRight: Radius.circular(30),
           ),
           boxShadow: [
-             BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 20, offset: const Offset(0, -5)),
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.1),
+              blurRadius: 20,
+              offset: const Offset(0, -5),
+            ),
           ],
         ),
         child: Row(
@@ -93,7 +72,9 @@ class _MainScreenState extends State<MainScreen> {
               decoration: const BoxDecoration(
                 color: Color(0xFFD932C6),
                 shape: BoxShape.circle,
-                boxShadow: [BoxShadow(color: Colors.black26, blurRadius: 10, offset: Offset(0, 5))]
+                boxShadow: [
+                  BoxShadow(color: Colors.black26, blurRadius: 10, offset: Offset(0, 5)),
+                ],
               ),
               child: Icon(icon, size: 30, color: Colors.white),
             )

@@ -149,7 +149,7 @@ class _AttendancePageState extends State<AttendancePage> {
             Container(
               padding: const EdgeInsets.all(28),
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.15),
+                color: Colors.white.withValues(alpha: 0.15),
                 shape: BoxShape.circle,
               ),
               child: const Icon(
@@ -200,8 +200,8 @@ class _AttendancePageState extends State<AttendancePage> {
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
               color: attended
-                  ? Colors.green.withOpacity(0.85)
-                  : Colors.white.withOpacity(0.18),
+                  ? Colors.green.withValues(alpha: 0.85)
+                  : Colors.white.withValues(alpha: 0.18),
               borderRadius: BorderRadius.circular(20),
               border: Border.all(
                 color: attended ? Colors.green : Colors.white30,
@@ -254,7 +254,7 @@ class _AttendancePageState extends State<AttendancePage> {
               borderRadius: BorderRadius.circular(24),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.15),
+                  color: Colors.black.withValues(alpha: 0.15),
                   blurRadius: 20,
                   offset: const Offset(0, 8),
                 ),
@@ -307,7 +307,7 @@ class _AttendancePageState extends State<AttendancePage> {
                     padding: const EdgeInsets.symmetric(
                         horizontal: 16, vertical: 8),
                     decoration: BoxDecoration(
-                      color: Colors.green.withOpacity(0.12),
+                      color: Colors.green.withValues(alpha: 0.12),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: const Row(
@@ -493,7 +493,7 @@ class _BookingPageState extends State<_BookingPage> {
                           children: [
                             CircleAvatar(
                               radius: 22,
-                              backgroundColor: primary.withOpacity(0.12),
+                              backgroundColor: primary.withValues(alpha: 0.12),
                               child: Icon(Icons.fitness_center, color: primary),
                             ),
                             const SizedBox(width: 12),
@@ -594,7 +594,7 @@ class _BookingPageState extends State<_BookingPage> {
                         Container(
                           padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(
-                            color: primary.withOpacity(0.06),
+                            color: primary.withValues(alpha: 0.06),
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: Row(
@@ -656,3 +656,4 @@ class _BookingPageState extends State<_BookingPage> {
     );
   }
 }
+

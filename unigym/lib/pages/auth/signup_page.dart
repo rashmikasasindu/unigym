@@ -120,7 +120,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   style: const TextStyle(color: Colors.white),
                   decoration: InputDecoration(
                     filled: true,
-                    fillColor: Colors.white.withOpacity(0.2),
+                    fillColor: Colors.white.withValues(alpha: 0.2),
                     prefixIcon: const Icon(Icons.email, color: Colors.white70),
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
                   ),
@@ -136,7 +136,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   style: const TextStyle(color: Colors.white),
                   decoration: InputDecoration(
                     filled: true,
-                    fillColor: Colors.white.withOpacity(0.2),
+                    fillColor: Colors.white.withValues(alpha: 0.2),
                     prefixIcon: const Icon(Icons.lock, color: Colors.white70),
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
                   ),
@@ -152,7 +152,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   keyboardType: TextInputType.phone,
                   decoration: InputDecoration(
                     filled: true,
-                    fillColor: Colors.white.withOpacity(0.2),
+                    fillColor: Colors.white.withValues(alpha: 0.2),
                     prefixIcon: const Icon(Icons.phone, color: Colors.white70),
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
                   ),
@@ -167,7 +167,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   style: const TextStyle(color: Colors.white),
                   decoration: InputDecoration(
                     filled: true,
-                    fillColor: Colors.white.withOpacity(0.2),
+                    fillColor: Colors.white.withValues(alpha: 0.2),
                     prefixIcon: const Icon(Icons.badge, color: Colors.white70),
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
                   ),
