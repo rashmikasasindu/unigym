@@ -9,10 +9,11 @@ class AuthService {
   Future<void> signUp({
     required String email, 
     required String password,
+    required String name,     // <-- Added Name
     required String contact,
     required String regNum,
     required String gender,
-    required String role,
+    // <-- Removed Role
   }) async {
     try {
       // A. Create User in Auth
@@ -24,18 +25,23 @@ class AuthService {
       User? user = result.user;
 
       if (user != null) {
-        // B. Send Verification Email immediately
+        // B. Update the "Display Name" in Firebase Auth
+        // This makes "Welcome, [Name]!" work on the Home Page immediately
+        await user.updateDisplayName(name);
+
+        // C. Send Verification Email immediately
         await user.sendEmailVerification();
 
-        // C. Save Extra Details to Firestore Database
+        // D. Save Extra Details to Firestore Database
         await _firestore.collection('users').doc(user.uid).set({
+          'uid': user.uid,
+          'name': name,             // <-- Save Name
           'email': email,
           'contact_number': contact,
           'registration_number': regNum,
           'gender': gender,
-          'role': role,
+          'role': 'User',           // <-- Default Role is automatically 'User'
           'created_at': DateTime.now(),
-          'uid': user.uid,
         });
       }
     } on FirebaseAuthException catch (e) {

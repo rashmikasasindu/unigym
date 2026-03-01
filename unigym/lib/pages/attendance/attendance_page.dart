@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import '../../services/reservation_service.dart';
-import '../admin/admin_scan_page.dart';
+
 
 class AttendancePage extends StatefulWidget {
   const AttendancePage({super.key});
@@ -82,19 +82,7 @@ class _AttendancePageState extends State<AttendancePage> {
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         iconTheme: const IconThemeData(color: Colors.white),
-        actions: [
-          // Admin scan button (hidden unless you know it's there — accessible always for now)
-          IconButton(
-            icon: const Icon(Icons.qr_code_scanner, color: Colors.white),
-            tooltip: 'Admin: Scan QR',
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const AdminScanPage()),
-              );
-            },
-          ),
-        ],
+
       ),
       body: Container(
         decoration: const BoxDecoration(
