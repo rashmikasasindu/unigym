@@ -5,7 +5,7 @@ import '../features/workout_plans_page.dart';
 import '../features/warmup_plans_page.dart';
 import '../features/gym_equipment_page.dart';
 import '../user/user_account_page.dart';
-import '../attendance/attendance_page.dart';
+import '../CheckIn/CheckIn_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -23,8 +23,8 @@ class _HomePageState extends State<HomePage> {
       _selectedIndex = index;
     });
     if (index == 0) {
-      Navigator.push(context, MaterialPageRoute(builder: (context) => const GymEquipmentPage()));
-    } else if (index == 2) {
+      Navigator.push(context, MaterialPageRoute(builder: (context) => const HomePage()));
+    } else if (index == 3) {
       Navigator.push(context, MaterialPageRoute(builder: (context) => const UserAccountPage()));
     }
     // Index 1 is Home, so we do nothing (we are already here)
@@ -122,12 +122,13 @@ class _HomePageState extends State<HomePage> {
                     ),
                     _buildMenuCard(
                       context,
-                      title: "Attendance",
+                      title: "Check-in",
                       icon: Icons.qr_code_rounded,
                       color: const Color(0xFFEDE7F6), // Light Purple
                       iconColor: const Color(0xFF7C3AED), // Deep Purple
-                      page: const AttendancePage(),
+                      page: const CheckIn(),
                     ),
+                    
                   ],
                 ),
               ),
@@ -212,9 +213,10 @@ class _HomePageState extends State<HomePage> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          _buildNavBarItem(icon: Icons.fitness_center, index: 0),
-          _buildNavBarItem(icon: Icons.home_rounded, index: 1, isCenter: true),
-          _buildNavBarItem(icon: Icons.person_rounded, index: 2),
+          _buildNavBarItem(icon: Icons.home_rounded, index: 0 ),
+          _buildNavBarItem(icon: Icons.calendar_today_rounded, index: 1),
+          _buildNavBarItem(icon: Icons.qr_code_rounded, index: 2),
+          _buildNavBarItem(icon: Icons.person_rounded, index: 3),
         ],
       ),
     );

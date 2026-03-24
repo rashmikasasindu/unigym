@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'pages/home/home_page.dart';
-import 'pages/features/gym_equipment_page.dart';
+import 'pages/features/reservation_page.dart';
+import 'pages/CheckIn/CheckIn_page.dart';
 import 'pages/user/user_account_page.dart';
 
 class MainScreen extends StatefulWidget {
@@ -16,8 +17,9 @@ class _MainScreenState extends State<MainScreen> {
 
   // The pages for each tab
   static const List<Widget> _pages = [
-    GymEquipmentPage(),
     HomePage(),
+    ReservationPage(),
+    CheckIn(),
     UserAccountPage(),
   ];
 
@@ -49,13 +51,14 @@ class _MainScreenState extends State<MainScreen> {
           ],
         ),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            _buildNavBarItem(icon: Icons.fitness_center, index: 0),
-            _buildNavBarItem(icon: Icons.home_rounded, index: 1, isCenter: true),
-            _buildNavBarItem(icon: Icons.person_rounded, index: 2),
-          ],
-        ),
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          _buildNavBarItem(icon: Icons.home_rounded, index: 0 ),
+          _buildNavBarItem(icon: Icons.calendar_today_rounded, index: 1),
+          _buildNavBarItem(icon: Icons.qr_code_rounded, index: 2),
+          _buildNavBarItem(icon: Icons.person_rounded, index: 3),
+        ],
+      ),
       ),
     );
   }

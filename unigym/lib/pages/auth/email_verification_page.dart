@@ -46,6 +46,9 @@ class _EmailVerificationPageState extends State<EmailVerificationPage> {
 
     if (isEmailVerified) {
       timer?.cancel();
+      // Force refresh the ID token so Firestore security rules see email_verified == true
+      await FirebaseAuth.instance.currentUser?.getIdToken(true);
+      
       if (mounted) {
         // Push a FRESH AuthGate and remove all routes.
         // We cannot just pop to the existing AuthGate because its StreamBuilder

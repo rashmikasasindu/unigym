@@ -4,14 +4,14 @@ import 'package:qr_flutter/qr_flutter.dart';
 import '../../services/reservation_service.dart';
 
 
-class AttendancePage extends StatefulWidget {
-  const AttendancePage({super.key});
+class CheckIn extends StatefulWidget {
+  const CheckIn({super.key});
 
   @override
-  State<AttendancePage> createState() => _AttendancePageState();
+  State<CheckIn> createState() => _CheckInState();
 }
 
-class _AttendancePageState extends State<AttendancePage> {
+class _CheckInState extends State<CheckIn> {
   final ReservationService _reservationService = ReservationService();
   bool _isLoading = true;
   String? _reservationId;
@@ -78,7 +78,7 @@ class _AttendancePageState extends State<AttendancePage> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         title: const Text(
-          'Attendance',
+          'Check-in',
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         iconTheme: const IconThemeData(color: Colors.white),

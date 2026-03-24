@@ -73,6 +73,7 @@ class _UserAccountPageState extends State<UserAccountPage>
       }
     } catch (e) {
       // Silently handle errors — UI will show with empty/default values
+      debugPrint('Error loading user profile: $e');
     } finally {
       if (mounted) {
         setState(() => _isLoading = false);
