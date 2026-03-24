@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'login_page.dart';
+import 'email_verification_page.dart';
 import '../home/home_page.dart';
 import '../admin/admin_home_page.dart';
 import '../instructor/instructor_home_page.dart';
@@ -27,8 +28,15 @@ class AuthGate extends StatelessWidget {
           return const LoginPage();
         }
 
-        // Logged in → fetch role from Firestore once
-        final uid = authSnapshot.data!.uid;
+        final user = authSnapshot.data!;
+
+        // Logged in but email not verified → hold on verification screen
+        if (!user.emailVerified) {
+          return EmailVerificationPage(email: user.email ?? '');
+        }
+
+        // Logged in & verified → fetch role from Firestore once
+        final uid = user.uid;
         return FutureBuilder<DocumentSnapshot>(
           future: FirebaseFirestore.instance.collection('users').doc(uid).get(),
           builder: (context, roleSnapshot) {

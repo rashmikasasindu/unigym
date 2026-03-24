@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../services/auth_service.dart';
+import 'email_verification_page.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -78,21 +79,10 @@ class _SignUpPageState extends State<SignUpPage> {
       );
 
       if (mounted) {
-        showDialog(
-          context: context,
-          barrierDismissible: false,
-          builder: (ctx) => AlertDialog(
-            title: const Text("Success"),
-            content: const Text("Account created! Verify your email to login."),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(ctx); 
-                  Navigator.pop(context); // Go back to Login
-                },
-                child: const Text("OK"),
-              )
-            ],
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => EmailVerificationPage(email: email),
           ),
         );
       }

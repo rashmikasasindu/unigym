@@ -15,6 +15,7 @@ class AuthService {
     required String gender,
     // <-- Removed Role
   }) async {
+    User? createdUser;
     try {
       // A. Create User in Auth
       UserCredential result = await _auth.createUserWithEmailAndPassword(
@@ -22,30 +23,38 @@ class AuthService {
         password: password
       );
       
-      User? user = result.user;
+      createdUser = result.user;
 
-      if (user != null) {
+      if (createdUser != null) {
         // B. Update the "Display Name" in Firebase Auth
-        // This makes "Welcome, [Name]!" work on the Home Page immediately
-        await user.updateDisplayName(name);
+        await createdUser.updateDisplayName(name);
 
         // C. Send Verification Email immediately
-        await user.sendEmailVerification();
+        await createdUser.sendEmailVerification();
 
         // D. Save Extra Details to Firestore Database
-        await _firestore.collection('users').doc(user.uid).set({
-          'uid': user.uid,
-          'name': name,             // <-- Save Name
+        await _firestore.collection('users').doc(createdUser.uid).set({
+          'uid': createdUser.uid,
+          'name': name,
           'email': email,
           'contact_number': contact,
           'registration_number': regNum,
           'gender': gender,
-          'role': 'User',           // <-- Default Role is automatically 'User'
+          'role': 'User',
           'created_at': DateTime.now(),
         });
       }
-    } on FirebaseAuthException catch (e) {
-      throw Exception(e.message);
+    } catch (e) {
+      // If anything after Auth creation fails (e.g., Firestore write),
+      // delete the half-created auth account so authStateChanges returns to
+      // null and the user is not stuck on the verification page.
+      if (createdUser != null) {
+        await createdUser.delete();
+      }
+      if (e is FirebaseAuthException) {
+        throw Exception(e.message);
+      }
+      rethrow;
     }
   }
 
