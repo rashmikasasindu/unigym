@@ -57,8 +57,13 @@ service cloud.firestore {
             && resource.data.userId == request.auth.uid
             && resource.data.attended == false);
 
-      // Only admins/instructors can mark attendance.
-      allow update: if isAdmin() || isInstructor();
+      // Admins/instructors can mark attendance (update any field).
+      // Users can end their own session (set completed:true) but cannot
+      // touch the 'attended' field.
+      allow update: if isAdmin() || isInstructor()
+        || (isVerifiedUser()
+            && resource.data.userId == request.auth.uid
+            && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['attended', 'userId', 'date', 'timeMinutes']));
     }
 
   }

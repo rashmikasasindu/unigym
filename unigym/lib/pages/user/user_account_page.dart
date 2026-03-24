@@ -161,6 +161,10 @@ class _UserAccountPageState extends State<UserAccountPage>
 
     if (confirmed == true) {
       await _auth.signOut();
+      if (mounted) {
+        // Clear the entire navigation stack — AuthGate will show LoginPage
+        Navigator.of(context).popUntil((route) => route.isFirst);
+      }
     }
   }
 
@@ -319,7 +323,7 @@ class _UserAccountPageState extends State<UserAccountPage>
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     const Icon(Icons.verified_user_rounded,
-                        color: Colors.white70, size: 14),
+                        color: Color.fromARGB(179, 87, 198, 87), size: 14),
                     const SizedBox(width: 4),
                     Text(
                       role,

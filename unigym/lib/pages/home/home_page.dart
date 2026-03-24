@@ -15,20 +15,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int _selectedIndex = 1; // Start with the 'Home' button selected
-
-  // Function to handle bottom nav bar taps
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-    if (index == 0) {
-      Navigator.push(context, MaterialPageRoute(builder: (context) => const HomePage()));
-    } else if (index == 3) {
-      Navigator.push(context, MaterialPageRoute(builder: (context) => const UserAccountPage()));
-    }
-    // Index 1 is Home, so we do nothing (we are already here)
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +22,6 @@ class _HomePageState extends State<HomePage> {
     final displayName = user?.displayName ?? user?.email?.split('@')[0] ?? 'User';
 
     return Scaffold(
-      extendBody: true, // Important for the floating nav bar effect
       body: Container(
         // The Purple Gradient Theme
         decoration: const BoxDecoration(
@@ -49,9 +34,51 @@ class _HomePageState extends State<HomePage> {
         child: SafeArea(
           child: Column(
             children: [
+              // --- TOP BAR: Account Icon (left) ---
+              Padding(
+                padding: const EdgeInsets.only(left: 20, right: 20, top: 12, bottom: 4),
+                child: Row(
+                  children: [
+                    GestureDetector(
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const UserAccountPage()),
+                      ),
+                      child: Container(
+                        padding: const EdgeInsets.all(3),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          gradient: const LinearGradient(
+                            colors: [Color.fromARGB(255, 230, 58, 179), Color(0xFFD932C6)],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.white.withValues(alpha: 0.4),
+                              blurRadius: 12,
+                              spreadRadius: 1,
+                            ),
+                          ],
+                        ),
+                        child: CircleAvatar(
+                          radius: 22,
+                          backgroundColor: const Color(0xFF5A2ED6),
+                          child: const Icon(
+                            Icons.person_rounded,
+                            color: Colors.white,
+                            size: 26,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
               // --- WELCOME BANNER ---
               Padding(
-                padding: const EdgeInsets.all(20.0),
+                padding: const EdgeInsets.fromLTRB(20, 8, 20, 20),
                 child: Container(
                   padding: const EdgeInsets.all(20.0),
                   decoration: BoxDecoration(
@@ -136,8 +163,6 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
       ),
-      // --- CUSTOM BOTTOM NAVIGATION BAR ---
-      bottomNavigationBar: _buildCustomBottomNavBar(),
     );
   }
 
@@ -192,55 +217,4 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  // Custom Bottom Navigation Bar Widget
-  Widget _buildCustomBottomNavBar() {
-    return Container(
-      height: 80,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(30),
-          topRight: Radius.circular(30),
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.1),
-            blurRadius: 20,
-            offset: const Offset(0, -5),
-          ),
-        ],
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          _buildNavBarItem(icon: Icons.home_rounded, index: 0 ),
-          _buildNavBarItem(icon: Icons.calendar_today_rounded, index: 1),
-          _buildNavBarItem(icon: Icons.qr_code_rounded, index: 2),
-          _buildNavBarItem(icon: Icons.person_rounded, index: 3),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildNavBarItem({required IconData icon, required int index, bool isCenter = false}) {
-    final isSelected = _selectedIndex == index;
-    final color = isSelected ? const Color(0xFFD932C6) : Colors.grey;
-
-    return GestureDetector(
-      onTap: () => _onItemTapped(index),
-      child: isCenter
-          ? Container(
-              padding: const EdgeInsets.all(15),
-              decoration: const BoxDecoration(
-                color: Color(0xFFD932C6), // Purple for center button
-                shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(color: Colors.black26, blurRadius: 10, offset: Offset(0, 5))
-                ]
-              ),
-              child: Icon(icon, size: 30, color: Colors.white),
-            )
-          : Icon(icon, size: 30, color: color),
-    );
-  }
 }

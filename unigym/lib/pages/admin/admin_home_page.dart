@@ -41,6 +41,10 @@ class AdminHomePage extends StatelessWidget {
 
     if (confirmed == true) {
       await FirebaseAuth.instance.signOut();
+      if (context.mounted) {
+        // Clear the entire navigation stack — AuthGate will show LoginPage
+        Navigator.of(context).popUntil((route) => route.isFirst);
+      }
     }
   }
 

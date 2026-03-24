@@ -71,6 +71,56 @@ class _CheckInState extends State<CheckIn> {
     _loadTodayReservation(); // Refresh after returning
   }
 
+  Future<void> _endSession() async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: const Row(
+          children: [
+            Icon(Icons.logout_rounded, color: Colors.red),
+            SizedBox(width: 8),
+            Text('End Session?', style: TextStyle(fontWeight: FontWeight.bold)),
+          ],
+        ),
+        content: const Text(
+          'Are you sure you want to end your gym session?\n\nYou will not be able to book another slot until both sessions today (4:00–6:00 PM and 6:00–8:00 PM) have finished.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12)),
+            ),
+            child: const Text('End Session'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed != true) return;
+
+    setState(() => _isLoading = true);
+    try {
+      await _reservationService.endSession(_reservationId!);
+      await _loadTodayReservation();
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error ending session: $e')),
+        );
+      }
+      setState(() => _isLoading = false);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -170,18 +220,76 @@ class _CheckInState extends State<CheckIn> {
     );
   }
 
+  Widget _buildSessionCompletedView() {
+    final now = DateTime.now();
+    final lastSessionEnd = DateTime(now.year, now.month, now.day, 20, 0);
+    final canRebook = now.isAfter(lastSessionEnd);
+
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(28),
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.15),
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(
+                Icons.check_circle_outline_rounded,
+                color: Colors.white,
+                size: 60,
+              ),
+            ),
+            const SizedBox(height: 28),
+            const Text(
+              'Session Completed',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 10),
+            Text(
+              canRebook
+                  ? 'Both sessions have ended. You can book again!'
+                  : 'You can book again once both sessions today\n(4:00–6:00 PM and 6:00–8:00 PM) have finished.',
+              style: const TextStyle(color: Colors.white70, fontSize: 15),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 32),
+            if (canRebook)
+              _actionButton('Book a Slot', Icons.add_circle_outline, _bookSlot),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _buildReservedView() {
     final data = _reservationData!;
     final attended = data['attended'] == true;
+    final completed = data['completed'] == true;
     final timeMinutes = data['timeMinutes'] as int? ?? 0;
     final date = (data['date'] as Timestamp?)?.toDate();
     final dateStr = date != null
         ? '${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year}'
         : 'Today';
 
-    return SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-      child: Column(
+    // If the session has been ended by the user, show completed view
+    if (completed) {
+      return _buildSessionCompletedView();
+    }
+
+    return Column(
+      children: [
+        Expanded(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+            child: Column(
         children: [
           // Status card
           Container(
@@ -321,16 +429,48 @@ class _CheckInState extends State<CheckIn> {
           const SizedBox(height: 24),
 
           // Refresh button
-          TextButton.icon(
-            onPressed: _loadTodayReservation,
-            icon: const Icon(Icons.refresh, color: Colors.white70),
-            label: const Text(
-              'Refresh Status',
-              style: TextStyle(color: Colors.white70, fontSize: 14),
+              TextButton.icon(
+                onPressed: _loadTodayReservation,
+                icon: const Icon(Icons.refresh, color: Colors.white70),
+                label: const Text(
+                  'Refresh Status',
+                  style: TextStyle(color: Colors.white70, fontSize: 14),
+                ),
+              ),
+              // Spacer so content doesn't overlap the bottom button
+              const SizedBox(height: 80),
+            ],
+          ),
+        ),
+      ),
+
+        // ── End Session Button (only visible after attendance is marked) ─────
+        if (attended)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
+            child: SizedBox(
+              width: double.infinity,
+              child: ElevatedButton.icon(
+                onPressed: _endSession,
+                icon: const Icon(Icons.stop_circle_outlined),
+                label: const Text(
+                  'End Session',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFFE53935),
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  elevation: 6,
+                  shadowColor: Colors.red.withValues(alpha: 0.5),
+                ),
+              ),
             ),
           ),
-        ],
-      ),
+      ],
     );
   }
 
