@@ -1,0 +1,65 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── Helper Functions ────────────────────────────────────────────────────
+    function isVerifiedUser() {
+      return request.auth != null && request.auth.token.email_verified == true;
+    }
+
+    function hasRole(role) {
+      return isVerifiedUser() &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role.lower() == role;
+    }
+
+    function isAdmin()      { return hasRole('admin'); }
+    function isInstructor() { return hasRole('instructor'); }
+    function isOwnDoc(uid)  { return isVerifiedUser() && request.auth.uid == uid; }
+
+    // ── users/{uid} ─────────────────────────────────────────────────────────
+    match /users/{uid} {
+      allow read: if isOwnDoc(uid) || isAdmin();
+
+      // create: no email_verified check — signup writes to Firestore before
+      // the user has a chance to verify their email.
+      allow create: if request.auth != null
+        && request.auth.uid == uid
+        && request.resource.data.keys().hasAll(['uid','name','email','role','gender'])
+        && request.resource.data.role == 'User';
+
+      allow update: if (isOwnDoc(uid) && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['role']))
+                    || isAdmin();
+
+      allow delete: if isAdmin();
+    }
+
+    // ── reservations/{reservationId} ────────────────────────────────────────
+    match /reservations/{reservationId} {
+      allow get: if isVerifiedUser() &&
+        (resource.data.userId == request.auth.uid || isAdmin() || isInstructor());
+
+      // list needed for: availability grid, active reservation stream,
+      // user reservation history, attended-days calendar.
+      allow list: if isVerifiedUser();
+
+      // NOTE: the date-range check (today → today+2) is enforced client-side
+      // in Flutter. Removing it from rules avoids a Timestamp vs Date type
+      // mismatch that caused permission-denied for every create.
+      allow create: if isVerifiedUser()
+        && request.resource.data.userId == request.auth.uid
+        && request.resource.data.attended == false
+        && request.resource.data.keys().hasAll(['userId','userName','date','timeMinutes','attended','createdAt'])
+        && request.resource.data.date is timestamp;
+
+      // Users can cancel their own reservation only if not yet attended.
+      allow delete: if isAdmin()
+        || (isVerifiedUser()
+            && resource.data.userId == request.auth.uid
+            && resource.data.attended == false);
+
+      // Only admins/instructors can mark attendance.
+      allow update: if isAdmin() || isInstructor();
+    }
+
+  }
+}
