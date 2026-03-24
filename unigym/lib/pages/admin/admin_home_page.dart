@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'admin_scan_page.dart';
+<<<<<<< HEAD
 import 'members_page.dart';
 import 'admin_view_reservation_page.dart';
 import 'admin_reports_page.dart';
+=======
+>>>>>>> 62631ad19398c6edf11e99ad29faa16044273242
 
 /// Home screen shown exclusively to users with role = "admin".
 /// Admins cannot navigate to user or instructor views.
@@ -175,11 +178,20 @@ class AdminHomePage extends StatelessWidget {
                       icon: Icons.people_rounded,
                       color: const Color(0xFFFFF0FA),
                       iconColor: const Color(0xFFD932C6),
+<<<<<<< HEAD
                       onTap: () => Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (_) => const MembersPage()),
                       ),
+=======
+                      onTap: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                              content: Text('Coming soon!')),
+                        );
+                      },
+>>>>>>> 62631ad19398c6edf11e99ad29faa16044273242
                     ),
                     _buildAdminCard(
                       context,
@@ -188,12 +200,21 @@ class AdminHomePage extends StatelessWidget {
                       icon: Icons.calendar_month_rounded,
                       color: const Color(0xFFE8FFF3),
                       iconColor: const Color(0xFF00C97C),
+<<<<<<< HEAD
                       onTap: () => Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (_) =>
                                 const AdminViewReservationPage()),
                       ),
+=======
+                      onTap: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                              content: Text('Coming soon!')),
+                        );
+                      },
+>>>>>>> 62631ad19398c6edf11e99ad29faa16044273242
                     ),
                     _buildAdminCard(
                       context,
@@ -202,11 +223,20 @@ class AdminHomePage extends StatelessWidget {
                       icon: Icons.bar_chart_rounded,
                       color: const Color(0xFFFFF8E1),
                       iconColor: const Color(0xFFFF9800),
+<<<<<<< HEAD
                       onTap: () => Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (_) => const AdminReportsPage()),
                       ),
+=======
+                      onTap: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                              content: Text('Coming soon!')),
+                        );
+                      },
+>>>>>>> 62631ad19398c6edf11e99ad29faa16044273242
                     ),
                   ],
                 ),

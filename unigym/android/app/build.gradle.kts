@@ -11,7 +11,11 @@ plugins {
 android {
     namespace = "com.example.unigym"
     compileSdk = flutter.compileSdkVersion
+<<<<<<< HEAD
     ndkVersion = "29.0.14206865"
+=======
+    ndkVersion = flutter.ndkVersion
+>>>>>>> 62631ad19398c6edf11e99ad29faa16044273242
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17

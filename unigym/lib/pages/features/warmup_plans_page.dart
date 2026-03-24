@@ -20,8 +20,13 @@ class WarmupPlansPage extends StatelessWidget {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
+<<<<<<< HEAD
               primary.withOpacity(0.9),
               primary.withOpacity(0.4),
+=======
+              primary.withValues(alpha: 0.9),
+              primary.withValues(alpha: 0.4),
+>>>>>>> 62631ad19398c6edf11e99ad29faa16044273242
               Theme.of(context).scaffoldBackgroundColor,
             ],
           ),
@@ -81,7 +86,11 @@ class WarmupPlansContent extends StatelessWidget {
           children: [
             CircleAvatar(
               radius: 22,
+<<<<<<< HEAD
               backgroundColor: primary.withOpacity(0.15),
+=======
+              backgroundColor: primary.withValues(alpha: 0.15),
+>>>>>>> 62631ad19398c6edf11e99ad29faa16044273242
               child: Icon(
                 Icons.local_fire_department,
                 color: primary,
@@ -167,7 +176,11 @@ class _WarmupPlanCard extends StatelessWidget {
                 width: 44,
                 height: 44,
                 decoration: BoxDecoration(
+<<<<<<< HEAD
                   color: primary.withOpacity(0.1),
+=======
+                  color: primary.withValues(alpha: 0.1),
+>>>>>>> 62631ad19398c6edf11e99ad29faa16044273242
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: Icon(icon, color: primary),
@@ -200,7 +213,11 @@ class _WarmupPlanCard extends StatelessWidget {
                             vertical: 4,
                           ),
                           decoration: BoxDecoration(
+<<<<<<< HEAD
                             color: primary.withOpacity(0.08),
+=======
+                            color: primary.withValues(alpha: 0.08),
+>>>>>>> 62631ad19398c6edf11e99ad29faa16044273242
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: Text(
@@ -229,3 +246,7 @@ class _WarmupPlanCard extends StatelessWidget {
     );
   }
 }
+<<<<<<< HEAD
+=======
+
+>>>>>>> 62631ad19398c6edf11e99ad29faa16044273242

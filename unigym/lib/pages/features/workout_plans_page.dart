@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 class WorkoutPlansPage extends StatelessWidget {
   const WorkoutPlansPage({super.key});
+<<<<<<< HEAD
 
   @override
   Widget build(BuildContext context) {
@@ -423,4 +424,10 @@ class _Exercise {
   final String name;
   final int sets;
   final String reps;
+=======
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(appBar: AppBar(title: const Text("Workout Plans")));
+  }
+>>>>>>> 62631ad19398c6edf11e99ad29faa16044273242
 }

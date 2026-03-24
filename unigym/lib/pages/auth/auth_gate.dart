@@ -32,6 +32,7 @@ class AuthGate extends StatelessWidget {
 
         // Logged in but email not verified → hold on verification screen
         if (!user.emailVerified) {
+<<<<<<< HEAD
   return FutureBuilder(
     future: user.reload(),
     builder: (context, snapshot) {
@@ -50,6 +51,10 @@ class AuthGate extends StatelessWidget {
     },
   );
 }
+=======
+          return EmailVerificationPage(email: user.email ?? '');
+        }
+>>>>>>> 62631ad19398c6edf11e99ad29faa16044273242
 
         // Logged in & verified → fetch role from Firestore once
         final uid = user.uid;

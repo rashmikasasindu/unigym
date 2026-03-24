@@ -24,7 +24,11 @@ class _EmailVerificationPageState extends State<EmailVerificationPage> {
     if (!isEmailVerified) {
       // Start a timer to check every 3 seconds if they clicked the link
       timer = Timer.periodic(
+<<<<<<< HEAD
         const Duration(seconds: 5),
+=======
+        const Duration(seconds: 3),
+>>>>>>> 62631ad19398c6edf11e99ad29faa16044273242
         (_) => checkEmailVerified(),
       );
     }
@@ -36,6 +40,7 @@ class _EmailVerificationPageState extends State<EmailVerificationPage> {
     super.dispose();
   }
 
+<<<<<<< HEAD
   bool _isChecking = false;
 
 Future<void> checkEmailVerified() async {
@@ -64,6 +69,34 @@ Future<void> checkEmailVerified() async {
 
 }
 
+=======
+  Future<void> checkEmailVerified() async {
+    // Reload the user data from Firebase to get the latest verification status
+    await FirebaseAuth.instance.currentUser?.reload();
+
+    setState(() {
+      isEmailVerified = FirebaseAuth.instance.currentUser?.emailVerified ?? false;
+    });
+
+    if (isEmailVerified) {
+      timer?.cancel();
+      // Force refresh the ID token so Firestore security rules see email_verified == true
+      await FirebaseAuth.instance.currentUser?.getIdToken(true);
+      
+      if (mounted) {
+        // Push a FRESH AuthGate and remove all routes.
+        // We cannot just pop to the existing AuthGate because its StreamBuilder
+        // caches the old (unverified) snapshot — a fresh instance re-subscribes
+        // and correctly routes the verified user to their home screen.
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (_) => const AuthGate()),
+          (route) => false,
+        );
+      }
+    }
+  }
+
+>>>>>>> 62631ad19398c6edf11e99ad29faa16044273242
   Future<void> resendVerificationEmail() async {
     try {
       final user = FirebaseAuth.instance.currentUser!;
