@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import '../../services/reservation_service.dart';
+import '../features/reservation_page.dart';
 
 
 class CheckIn extends StatefulWidget {
@@ -65,7 +66,7 @@ class _CheckInState extends State<CheckIn> {
   Future<void> _bookSlot() async {
     await Navigator.push(
       context,
-      MaterialPageRoute(builder: (_) => const _BookingPage()),
+      MaterialPageRoute(builder: (_) => const ReservationPage()),
     );
     _loadTodayReservation(); // Refresh after returning
   }
