@@ -97,9 +97,11 @@ class ReservationService {
   // Used by the availability table — returns a stream of all non-attended docs.
 
   Stream<QuerySnapshot> getAllConfirmedReservations() {
+    // Include ALL reservations (attended or not) so that the slot count
+    // is NOT restored when someone scans their QR code. A slot is only
+    // freed when a reservation is cancelled (document deleted).
     return _firestore
         .collection('reservations')
-        .where('attended', isEqualTo: false)
         .snapshots();
   }
 

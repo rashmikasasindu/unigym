@@ -7,7 +7,7 @@ import '../../services/reservation_service.dart';
 /// Rules: max 1 slot per day, can book across up to 3 different upcoming days
 /// (not 3 consecutive — just cannot have 2 slots on the SAME day).
 class InstructorReservationPage extends StatefulWidget {
-  const InstructorReservationPage({super.key});
+  const InstructorReservationPage({super.key}); 
 
   @override
   State<InstructorReservationPage> createState() =>
@@ -21,7 +21,7 @@ class _InstructorReservationPageState
   DateTime? _selectedDate;
   int? _selectedTimeMinutes;
 
-  static const int _maxCapacity = 40;
+  static const int _maxCapacity = 20;
 
   static const List<Map<String, dynamic>> _slots = [
     {'label': '4:00 PM – 6:00 PM', 'minutes': 960},

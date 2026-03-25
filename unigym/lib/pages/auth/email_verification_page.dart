@@ -24,7 +24,7 @@ class _EmailVerificationPageState extends State<EmailVerificationPage> {
     if (!isEmailVerified) {
       // Start a timer to check every 3 seconds if they clicked the link
       timer = Timer.periodic(
-        const Duration(seconds: 3),
+        const Duration(seconds: 5),
         (_) => checkEmailVerified(),
       );
     }
@@ -36,31 +36,33 @@ class _EmailVerificationPageState extends State<EmailVerificationPage> {
     super.dispose();
   }
 
-  Future<void> checkEmailVerified() async {
-    // Reload the user data from Firebase to get the latest verification status
-    await FirebaseAuth.instance.currentUser?.reload();
+  bool _isChecking = false;
 
-    setState(() {
-      isEmailVerified = FirebaseAuth.instance.currentUser?.emailVerified ?? false;
-    });
+Future<void> checkEmailVerified() async {
+  final user = FirebaseAuth.instance.currentUser;
 
-    if (isEmailVerified) {
-      timer?.cancel();
-      // Force refresh the ID token so Firestore security rules see email_verified == true
-      await FirebaseAuth.instance.currentUser?.getIdToken(true);
-      
-      if (mounted) {
-        // Push a FRESH AuthGate and remove all routes.
-        // We cannot just pop to the existing AuthGate because its StreamBuilder
-        // caches the old (unverified) snapshot — a fresh instance re-subscribes
-        // and correctly routes the verified user to their home screen.
-        Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (_) => const AuthGate()),
-          (route) => false,
-        );
-      }
+  if (user == null) return;
+
+  await user.reload(); // refresh from Firebase
+
+  final updatedUser = FirebaseAuth.instance.currentUser;
+
+  setState(() {
+    isEmailVerified = updatedUser?.emailVerified ?? false;
+  });
+
+  if (isEmailVerified) {
+    timer?.cancel();
+
+    if (mounted) {
+      Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (_) => const AuthGate()),
+        (route) => false,
+      );
     }
   }
+
+}
 
   Future<void> resendVerificationEmail() async {
     try {

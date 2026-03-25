@@ -17,7 +17,7 @@ class _ReservationPageState extends State<ReservationPage> {
   DateTime? _selectedDate;
   int? _selectedTimeMinutes; // minutes from midnight
 
-  static const int _maxCapacity = 40;
+  static const int _maxCapacity = 20;
 
   // Two fixed slots: 4 PM–6 PM and 6 PM–8 PM
   static const List<Map<String, dynamic>> _slots = [

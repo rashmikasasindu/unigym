@@ -78,5 +78,17 @@ service cloud.firestore {
       allow create, update, delete: if isAdmin() || isInstructor();
     }
 
+    // ── messages/{userId} ────────────────────────────────────────────────────
+    // The meta-doc (last message preview) is readable by the owner and admins.
+    match /messages/{userId} {
+      allow read, write: if isOwnDoc(userId) || isAdmin();
+
+      // chats sub-collection: the actual message bubbles
+      match /chats/{messageId} {
+        // Users can read/write only their own thread.
+        allow read, write: if isOwnDoc(userId) || isAdmin();
+      }
+    }
+
   }
 }

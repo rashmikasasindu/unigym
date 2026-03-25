@@ -5,6 +5,7 @@ import '../features/workout_plans_page.dart';
 import '../features/warmup_plans_page.dart';
 import '../features/gym_equipment_page.dart';
 import '../user/user_account_page.dart';
+import '../user/user_message_page.dart';
 import '../CheckIn/CheckIn_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -155,7 +156,14 @@ class _HomePageState extends State<HomePage> {
                       iconColor: const Color(0xFF7C3AED), // Deep Purple
                       page: const CheckIn(),
                     ),
-                    
+                    _buildMenuCard(
+                      context,
+                      title: "Message Admin",
+                      icon: Icons.chat_rounded,
+                      color: const Color(0xFFE8F5E9), // Light green
+                      iconColor: const Color(0xFF00C97C), // Green
+                      page: const UserMessagePage(),
+                    ),
                   ],
                 ),
               ),

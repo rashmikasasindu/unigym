@@ -32,8 +32,24 @@ class AuthGate extends StatelessWidget {
 
         // Logged in but email not verified → hold on verification screen
         if (!user.emailVerified) {
-          return EmailVerificationPage(email: user.email ?? '');
-        }
+  return FutureBuilder(
+    future: user.reload(),
+    builder: (context, snapshot) {
+      if (snapshot.connectionState == ConnectionState.waiting) {
+        return const _LoadingScreen();
+      }
+
+      final updatedUser = FirebaseAuth.instance.currentUser;
+
+      if (updatedUser != null && !updatedUser.emailVerified) {
+        return EmailVerificationPage(email: updatedUser.email ?? '');
+      }
+
+      // If verified, rebuild AuthGate
+      return const AuthGate();
+    },
+  );
+}
 
         // Logged in & verified → fetch role from Firestore once
         final uid = user.uid;
