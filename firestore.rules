@@ -18,7 +18,7 @@ service cloud.firestore {
 
     // ── users/{uid} ─────────────────────────────────────────────────────────
     match /users/{uid} {
-      allow read: if isOwnDoc(uid) || isAdmin();
+      allow read: if isOwnDoc(uid) || isAdmin() || isInstructor();
 
       // create: no email_verified check — signup writes to Firestore before
       // the user has a chance to verify their email.
@@ -64,6 +64,18 @@ service cloud.firestore {
         || (isVerifiedUser()
             && resource.data.userId == request.auth.uid
             && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['attended', 'userId', 'date', 'timeMinutes']));
+    }
+
+    // ── workoutPlans ─────────────────────────────────────────────────────────
+    match /workoutPlans/{docId} {
+      allow read: if isVerifiedUser();
+      allow create, update, delete: if isAdmin() || isInstructor();
+    }
+
+    // ── warmupPlans ──────────────────────────────────────────────────────────
+    match /warmupPlans/{docId} {
+      allow read: if isVerifiedUser();
+      allow create, update, delete: if isAdmin() || isInstructor();
     }
 
   }

@@ -2,9 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../features/workout_plans_page.dart';
 import '../features/warmup_plans_page.dart';
+import 'instructor_account_page.dart';
+import 'instructor_reservation_page.dart';
+import 'instructor_checkin_page.dart';
+import 'instructor_members_page.dart';
+import 'instructor_progress_page.dart';
 
 /// Home screen shown exclusively to users with role = "instructor".
-/// Instructors cannot navigate to user or admin views.
 class InstructorHomePage extends StatelessWidget {
   const InstructorHomePage({super.key});
 
@@ -12,7 +16,8 @@ class InstructorHomePage extends StatelessWidget {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         title: const Row(
           children: [
             Icon(Icons.logout_rounded, color: Color(0xFFD932C6)),
@@ -64,7 +69,7 @@ class InstructorHomePage extends StatelessWidget {
         child: SafeArea(
           child: Column(
             children: [
-              // ── Welcome Banner ─────────────────────────────────────────────
+              // ── Welcome Banner ────────────────────────────────────────
               Padding(
                 padding: const EdgeInsets.all(20),
                 child: Container(
@@ -75,16 +80,26 @@ class InstructorHomePage extends StatelessWidget {
                   ),
                   child: Row(
                     children: [
-                      Container(
-                        padding: const EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withValues(alpha: 0.25),
-                          shape: BoxShape.circle,
+                      // Account icon (left)
+                      GestureDetector(
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (_) =>
+                                  const InstructorAccountPage()),
                         ),
-                        child: const Icon(Icons.school_rounded,
-                            color: Colors.white, size: 32),
+                        child: Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withValues(alpha: 0.25),
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(Icons.person_rounded,
+                              color: Colors.white, size: 28),
+                        ),
                       ),
-                      const SizedBox(width: 16),
+                      const SizedBox(width: 14),
+                      // Greeting
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -92,7 +107,7 @@ class InstructorHomePage extends StatelessWidget {
                             Text(
                               'Hello, $displayName!',
                               style: const TextStyle(
-                                fontSize: 22,
+                                fontSize: 20,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.white,
                               ),
@@ -116,6 +131,7 @@ class InstructorHomePage extends StatelessWidget {
                           ],
                         ),
                       ),
+                      // Logout icon (right)
                       IconButton(
                         icon: const Icon(Icons.logout_rounded,
                             color: Colors.white70),
@@ -127,7 +143,7 @@ class InstructorHomePage extends StatelessWidget {
                 ),
               ),
 
-              // ── Section Label ──────────────────────────────────────────────
+              // ── Section Label ─────────────────────────────────────────
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 24),
                 child: Align(
@@ -145,7 +161,7 @@ class InstructorHomePage extends StatelessWidget {
               ),
               const SizedBox(height: 12),
 
-              // ── Instructor Cards ───────────────────────────────────────────
+              // ── 6-Card Grid ───────────────────────────────────────────
               Expanded(
                 child: GridView.count(
                   crossAxisCount: 2,
@@ -156,54 +172,89 @@ class InstructorHomePage extends StatelessWidget {
                     _buildCard(
                       context,
                       title: 'Workout Plans',
-                      subtitle: 'Manage workout plans',
+                      subtitle: 'Add & manage workout plans',
                       icon: Icons.fitness_center_rounded,
                       color: const Color(0xFFE0F7FA),
                       iconColor: const Color(0xFF00BCD4),
                       onTap: () => Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (_) => const WorkoutPlansPage()),
+                          builder: (_) =>
+                              const WorkoutPlansPage(isInstructor: true),
+                        ),
                       ),
                     ),
                     _buildCard(
                       context,
                       title: 'Warm-up Plans',
-                      subtitle: 'Manage warm-up plans',
+                      subtitle: 'Add & manage warm-up plans',
                       icon: Icons.directions_run_rounded,
                       color: const Color(0xFFFFF3E0),
                       iconColor: const Color(0xFFFF9800),
                       onTap: () => Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (_) => const WarmupPlansPage()),
+                          builder: (_) =>
+                              const WarmupPlansPage(isInstructor: true),
+                        ),
+                      ),
+                    ),
+                    _buildCard(
+                      context,
+                      title: 'Reserve a Slot',
+                      subtitle: 'Book your gym sessions',
+                      icon: Icons.calendar_today_rounded,
+                      color: const Color(0xFFEDE7F6),
+                      iconColor: const Color(0xFF7B1FA2),
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) =>
+                              const InstructorReservationPage(),
+                        ),
+                      ),
+                    ),
+                    _buildCard(
+                      context,
+                      title: 'Check-In',
+                      subtitle: 'View your QR & attendance',
+                      icon: Icons.qr_code_rounded,
+                      color: const Color(0xFFE8F5E9),
+                      iconColor: const Color(0xFF388E3C),
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const InstructorCheckInPage(),
+                        ),
                       ),
                     ),
                     _buildCard(
                       context,
                       title: 'My Members',
-                      subtitle: 'View assigned members',
+                      subtitle: 'View member reservations',
                       icon: Icons.people_alt_rounded,
                       color: const Color(0xFFF0F4FF),
                       iconColor: const Color(0xFF4A3ED6),
-                      onTap: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Coming soon!')),
-                        );
-                      },
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const InstructorMembersPage(),
+                        ),
+                      ),
                     ),
                     _buildCard(
                       context,
                       title: 'Progress',
-                      subtitle: 'Track member progress',
+                      subtitle: 'Track member attendance',
                       icon: Icons.trending_up_rounded,
                       color: const Color(0xFFE8FFF3),
                       iconColor: const Color(0xFF00C97C),
-                      onTap: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Coming soon!')),
-                        );
-                      },
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const InstructorProgressPage(),
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -253,7 +304,7 @@ class InstructorHomePage extends StatelessWidget {
             Text(
               title,
               style: const TextStyle(
-                fontSize: 16,
+                fontSize: 15,
                 fontWeight: FontWeight.bold,
                 color: Colors.black87,
               ),
